@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('title', 'Artikel Kesehatan')
-@include('layouts.navbars.dashboardnav')
 @section('content')
+@include('layouts.navbars.dashboardnav')
 <div class="container py-5" style="background-color: white;">
     <div class="row mb-4">
         <div class="col-12 text-center">

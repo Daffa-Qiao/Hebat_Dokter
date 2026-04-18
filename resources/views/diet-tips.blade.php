@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('title', 'Semua Tips Diet')
-@include ('layouts.navbars.dashboardnav')
 @section('content')
+@include('layouts.navbars.dashboardnav')
 <div class="container py-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>

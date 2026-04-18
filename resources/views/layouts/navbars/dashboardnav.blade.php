@@ -27,7 +27,7 @@
 
         {{-- Brand --}}
         <a class="navbar-brand d-flex align-items-center gap-2" href="{{ route('home') }}">
-            <img src="{{ asset('img/Logo_Puskesmas.jpg') }}" alt="Hebat Dokter" height="36" class="rounded-1">
+            <img src="{{ asset('img/logo.png') }}" alt="Hebat Dokter" height="36" class="rounded-1">
             <span class="fw-bold" style="color:green">Hebat Dokter</span>
         </a>
 

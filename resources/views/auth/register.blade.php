@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('title', 'Register User')
-@include('layouts.navbars.dashboardnav')
 @section('content')
+@include('layouts.navbars.dashboardnav')
 <main class="main-content mt-0">
     <section>
         <div class="page-header min-vh-100">
