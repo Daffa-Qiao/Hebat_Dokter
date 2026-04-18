@@ -37,5 +37,9 @@ EXPOSE 80
 # Copy Apache vhost config
 COPY ./docker/vhost.conf /etc/apache2/sites-available/000-default.conf
 
-# Start Apache
-CMD ["apache2-foreground"]
+# Copy and set entrypoint
+COPY ./docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+# Start via entrypoint (runs migrate --seed, then Apache)
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
