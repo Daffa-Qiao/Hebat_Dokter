@@ -1,4 +1,5 @@
-@php $role = auth()->user()->role; 
+@php
+$role = auth()->user()->role;
 $roleColor = '';
 $roleBtnText = '';
 
