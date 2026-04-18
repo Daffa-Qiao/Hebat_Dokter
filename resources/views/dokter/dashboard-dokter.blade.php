@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('title', 'Dashboard Dokter')
-@include('layouts.navbars.dashboardnav')
 @section('content')
+@include('layouts.navbars.dashboardnav')
 <div class="container py-4">
     <div class="card border-0 shadow-sm mb-4">
         <div class="card-header bg-danger text-white">

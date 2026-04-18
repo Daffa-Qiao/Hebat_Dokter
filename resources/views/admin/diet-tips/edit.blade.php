@@ -1,8 +1,8 @@
 @extends('layouts.app')
-@include('layouts.navbars.dashboardnav')
 @section('title', 'Edit Tips Diet')
 
 @section('content')
+@include('layouts.navbars.dashboardnav')
 <div class="container-fluid py-4">
     <div class="row justify-content-center">
         <div class="col-lg-8">

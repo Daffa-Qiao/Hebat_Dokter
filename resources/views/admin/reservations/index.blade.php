@@ -1,9 +1,9 @@
 @extends('layouts.app')
-@include('layouts.navbars.dashboardnav')
 
 @section('title', 'Manajemen Reservasi')
 
 @section('content')
+@include('layouts.navbars.dashboardnav')
 @include('components.alert')
 <div class="container-fluid">
     <div class="row">

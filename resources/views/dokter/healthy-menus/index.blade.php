@@ -1,8 +1,8 @@
 @extends('layouts.app')
-@include('layouts.navbars.dashboardnav')
 @section('title', 'Manajemen Menu Sehat Dokter')
 
 @section('content')
+@include('layouts.navbars.dashboardnav')
 @include('components.alert')
 <div class="container-fluid py-4">
     <div class="row">
