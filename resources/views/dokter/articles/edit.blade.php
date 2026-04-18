@@ -1,0 +1,49 @@
+@extends('layouts.app')
+@section('title', 'Edit Artikel')
+@section('content')
+@include('layouts.navbars.dashboardnav')
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-9">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-warning text-dark">Edit Artikel Kesehatan</div>
+                <div class="card-body">
+                    <form method="POST" action="{{ route('dokter.articles.update', $article) }}" enctype="multipart/form-data">
+                        @csrf @method('PUT')
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Judul Artikel</label>
+                            <input type="text" name="title" class="form-control @error('title') is-invalid @enderror"
+                                   value="{{ old('title', $article->title) }}" required>
+                            @error('title')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Thumbnail</label>
+                            @if($article->thumbnail)
+                                <div class="mb-2"><img src="{{ asset('storage/' . $article->thumbnail) }}" style="height:80px; border-radius:6px;" alt=""></div>
+                            @endif
+                            <input type="file" name="thumbnail" class="form-control" accept="image/*">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Isi Artikel</label>
+                            <textarea name="content" class="form-control @error('content') is-invalid @enderror"
+                                      rows="12" required>{{ old('content', $article->content) }}</textarea>
+                            @error('content')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
+                        <div class="mb-4">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" name="published" id="published" value="1"
+                                       {{ $article->published ? 'checked' : '' }}>
+                                <label class="form-check-label fw-semibold" for="published">Publish Artikel</label>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-warning">Perbarui</button>
+                            <a href="{{ route('dokter.articles.index') }}" class="btn btn-secondary">Batal</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
