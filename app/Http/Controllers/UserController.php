@@ -102,7 +102,7 @@ class UserController extends Controller
         $latestEvents = \App\Models\Event::latest()->take(3)->get();
         $latestDietTips = \App\Models\DietTip::latest()->take(3)->get();
         // Statistik reservasi per bulan untuk pasien
-        $reservasiPerBulan = \App\Models\Reservation::selectRaw('MONTH(jadwal) as bulan, COUNT(*) as total')
+        $reservasiPerBulan = \App\Models\Reservation::selectRaw('EXTRACT(MONTH FROM jadwal) as bulan, COUNT(*) as total')
             ->where('pasien_id', auth()->id())
             ->groupBy('bulan')
             ->orderBy('bulan')
@@ -126,7 +126,7 @@ class UserController extends Controller
             ->take(5)
             ->get();
         // Statistik reservasi per bulan untuk dokter
-        $reservasiPerBulan = \App\Models\Reservation::selectRaw('MONTH(jadwal) as bulan, COUNT(*) as total')
+        $reservasiPerBulan = \App\Models\Reservation::selectRaw('EXTRACT(MONTH FROM jadwal) as bulan, COUNT(*) as total')
             ->where('dokter_id', auth()->id())
             ->groupBy('bulan')
             ->orderBy('bulan')
@@ -148,7 +148,7 @@ class UserController extends Controller
         $recentUsers = \App\Models\User::latest()->take(5)->get();
         $recentReservations = \App\Models\Reservation::with(['pasien', 'dokter'])->latest()->take(5)->get();
         // Data reservasi per bulan (12 bulan)
-        $reservasiPerBulan = \App\Models\Reservation::selectRaw('MONTH(jadwal) as bulan, COUNT(*) as total')
+        $reservasiPerBulan = \App\Models\Reservation::selectRaw('EXTRACT(MONTH FROM jadwal) as bulan, COUNT(*) as total')
             ->groupBy('bulan')
             ->orderBy('bulan')
             ->pluck('total', 'bulan')->toArray();
