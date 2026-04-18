@@ -73,4 +73,9 @@ class HealthyMenuController extends Controller
         return redirect()->route('admin.healthy-menus.index')
             ->with('success', 'Menu sehat berhasil dihapus.');
     }
+
+    public function show(HealthyMenu $menu)
+    {
+        return view('healthy-menus.show', compact('menu'));
+    }
 }

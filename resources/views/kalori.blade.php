@@ -1,12 +1,7 @@
 @extends('layouts.app')
 @section('title', 'Kalkulator Kalori')
+@include('layouts.navbars.dashboardnav')
 @section('content')
-<!-- Home Button -->
-<div class="position-fixed" style="top: 20px; left: 20px; z-index: 1000;">
-    <a href="{{ route('home') }}" class="btn btn-primary rounded-circle shadow-sm" style="background-color:green;" title="Kembali ke Beranda">
-        <i class="fas fa-home"></i>
-    </a>
-</div>
 
 <div class="container py-5">
     <div class="row justify-content-center">

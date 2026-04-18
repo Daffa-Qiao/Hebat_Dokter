@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\CaptchaController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\ArticleController;
@@ -12,6 +13,8 @@ use App\Http\Controllers\Admin\EventController;
 use App\Http\Controllers\Admin\DietTipController;
 use App\Http\Controllers\Admin\HealthyMenuController;
 use App\Http\Controllers\Admin\UserManagementController;
+use App\Http\Controllers\Dokter\HealthyMenuController as DokterHealthyMenuController;
+use App\Http\Controllers\Dokter\ArticleController as DokterArticleController;
 use App\Models\HealthyMenu;
 use App\Models\Event;
 use App\Models\DietTip;
@@ -49,6 +52,7 @@ Route::get('/', function () {
 })->name('home');
 
 // Auth routes
+Route::get('captcha', [CaptchaController::class, 'generate'])->name('captcha');
 Route::get('login', [UserController::class, 'showLogin'])->name('login');
 Route::post('login', [UserController::class, 'login']);
 Route::get('register', [UserController::class, 'showRegister'])->name('register');
@@ -85,13 +89,18 @@ Route::middleware(['auth'])->get('menu-sehat', function (Request $request) {
         $specialization = $lastReservation?->disease;
     }
 
-    $menus = HealthyMenu::when($specialization, function ($query, $specialization) {
+    $menus = \App\Models\HealthyMenu::when($specialization, function ($query, $specialization) {
         return $query->where('specialization', 'like', "%{$specialization}%")
                      ->orWhere('specialization', 'like', '%Umum%');
     })->orderBy('created_at', 'desc')->get();
 
     return view('menu-sehat', compact('menus', 'specialization'));
 })->name('healthy-menus.index');
+
+// Route::get('menu-sehat', function () {
+//     return view('menu-sehat');
+// })->name('healthy-menus.index');    
+Route::get('menu-sehat/{menu}', [HealthyMenuController::class, 'show'])->name('healthy-menus.show');
 
 // Halaman Event Publik
 Route::get('events', function () {

@@ -73,6 +73,17 @@
                                 <i class="fas fa-bolt me-1"></i>Tantangan
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link fw-medium {{ request()->routeIs('kalori') ? 'active' : '' }}"
+                               href="{{ route('calories.index') }}">
+                                <i class="fas fa-calculator me-1"></i>Kalkulator Kalori
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link fw-medium {{ request()->routeIs('healthy-menus.index') ? 'active' : '' }}"
+                               href="{{ route('healthy-menus.index') }}">
+                                    <i class="fas fa-utensils me-1"></i>Menu Sehat
+                                </a>
 
                     @elseif($role === 'dokter')
                         <li class="nav-item">

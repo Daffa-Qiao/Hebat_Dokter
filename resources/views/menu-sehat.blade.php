@@ -1,12 +1,7 @@
 @extends('layouts.app')
 @section('title', 'Menu Makanan Sehat')
+@include('layouts.navbars.dashboardnav')
 @section('content')
-<!-- Home Button -->
-<div class="position-fixed" style="top: 20px; left: 20px; z-index: 1000;">
-    <a href="{{ route('home') }}" class="btn btn-primary rounded-circle shadow-sm" style="background-color:green;" title="Kembali ke Beranda">
-        <i class="fas fa-home"></i>
-    </a>
-</div>
 
 <div class="container py-5" style="background-color: white;">
     <div class="row mb-4">
@@ -54,6 +49,7 @@
                         @if($menu->doctor)
                             <p class="text-muted small mt-2 mb-0">Disiapkan oleh Dr. {{ $menu->doctor->name }}</p>
                         @endif
+                        <a href="{{ route('healthy-menus.show', $menu->id) }}" class="btn btn-outline-success btn-sm mt-3">Detail</a>
                     </div>
                 </div>
             </div>

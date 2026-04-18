@@ -10,14 +10,30 @@ use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
+    private function generateCaptcha(Request $request): array
+    {
+        $num1   = random_int(1, 9);
+        $num2   = random_int(1, 9);
+        $request->session()->put('captcha_answer', $num1 + $num2);
+        return ['num1' => $num1, 'num2' => $num2];
+    }
+
     public function showLogin(Request $request)
     {
         $rememberedEmail = Cookie::get('remembered_email');
-        return view('auth.login', compact('rememberedEmail'));
+        $captcha = $this->generateCaptcha($request);
+        return view('auth.login', compact('rememberedEmail', 'captcha'));
     }
 
     public function login(Request $request)
     {
+        // Validate captcha
+        if ((string) $request->input('captcha') !== (string) $request->session()->get('captcha_answer')) {
+            $this->generateCaptcha($request);
+            return back()->withErrors(['captcha' => 'Jawaban captcha salah.'])->withInput();
+        }
+        $request->session()->forget('captcha_answer');
+
         $credentials = $request->only('email', 'password');
         $remember = $request->filled('remember');
 
@@ -33,16 +49,25 @@ class UserController extends Controller
             return $this->redirectToDashboard();
         }
 
+        $this->generateCaptcha($request);
         return back()->withErrors(['email' => 'Email atau password salah.'])->withInput();
     }
 
-    public function showRegister()
+    public function showRegister(Request $request)
     {
-        return view('auth.register');
+        $captcha = $this->generateCaptcha($request);
+        return view('auth.register', compact('captcha'));
     }
 
     public function register(Request $request)
     {
+        // Validate captcha
+        if ((string) $request->input('captcha') !== (string) $request->session()->get('captcha_answer')) {
+            $this->generateCaptcha($request);
+            return back()->withErrors(['captcha' => 'Jawaban captcha salah.'])->withInput();
+        }
+        $request->session()->forget('captcha_answer');
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',

@@ -78,6 +78,22 @@
 
                                         <!-- Terms & Conditions -->
                                         <div class="col-12">
+                                            {{-- CAPTCHA --}}
+                                            <div class="mb-3">
+                                                <label class="form-label fw-semibold">Verifikasi Keamanan</label>
+                                                <div class="d-flex align-items-center gap-3 mb-2">
+                                                    <div class="px-4 py-2 rounded-3 fw-bold text-white text-center"
+                                                         style="background:linear-gradient(135deg,#157347,#28a745);font-size:1.3rem;letter-spacing:2px;min-width:130px;user-select:none;">
+                                                        {{ $captcha['num1'] }} + {{ $captcha['num2'] }} = ?
+                                                    </div>
+                                                </div>
+                                                <input type="number" name="captcha" class="form-control form-control-lg @error('captcha') is-invalid @enderror"
+                                                       placeholder="Masukkan hasil penjumlahan" required autocomplete="off">
+                                                @error('captcha')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+
                                             <div class="form-check mb-3">
                                                 <input class="form-check-input @error('terms') is-invalid @enderror" type="checkbox" name="terms" id="terms" required>
                                                 <label class="form-check-label" for="terms">

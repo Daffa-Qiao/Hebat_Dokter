@@ -41,9 +41,6 @@ switch ($role) {
                 <a href="{{ route('pasien.reservations.create') }}" class="list-group-item list-group-item-action {{ request()->routeIs('pasien.reservations.create') ? 'active' : '' }}">
                     <i class="fas fa-plus-circle me-2"></i>Buat Reservasi
                 </a>
-                <a href="{{ route('doctors.index') }}" class="list-group-item list-group-item-action">
-                    <i class="fas fa-user-md me-2"></i>Cari Dokter
-                </a>
             @elseif($role === 'dokter')
                 <a href="{{ route('dokter.reservations.index') }}" class="list-group-item list-group-item-action {{ request()->routeIs('dokter.reservations.*') ? 'active' : '' }}">
                     <i class="fas fa-calendar-check me-2"></i>Reservasi Masuk

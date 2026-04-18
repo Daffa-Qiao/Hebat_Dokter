@@ -3,6 +3,9 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\User;
+use App\Models\Event;
+use App\Models\DietTip;
 use App\Models\HealthyMenu;
 use Illuminate\Database\Seeder;
 
@@ -94,7 +97,7 @@ class DatabaseSeeder extends Seeder
         ];
 
         foreach ($additionalDoctors as $doctor) {
-            \App\Models\User::updateOrCreate([
+            User::updateOrCreate([
                 'email' => $doctor['email'],
             ], [
                 'name' => $doctor['name'],
@@ -108,7 +111,7 @@ class DatabaseSeeder extends Seeder
         }
 
         // Seeder user role admin
-        \App\Models\User::updateOrCreate([
+        User::updateOrCreate([
             'email' => 'admin@example.com',
         ], [
             'name' => 'Admin Satu',
@@ -118,7 +121,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // Seeder user role pasien
-        \App\Models\User::updateOrCreate([
+        User::updateOrCreate([
             'email' => 'pasien@example.com',
         ], [
             'name' => 'Pasien Satu',
@@ -146,7 +149,7 @@ class DatabaseSeeder extends Seeder
         ];
 
         foreach ($additionalPatients as $patient) {
-            \App\Models\User::updateOrCreate([
+            User::updateOrCreate([
                 'email' => $patient['email'],
             ], [
                 'name' => $patient['name'],
@@ -182,7 +185,7 @@ class DatabaseSeeder extends Seeder
         ];
 
         foreach ($events as $event) {
-            \App\Models\Event::updateOrCreate([
+            Event::updateOrCreate([
                 'title' => $event['title'],
                 'date' => $event['date'],
             ], $event);
@@ -211,13 +214,13 @@ class DatabaseSeeder extends Seeder
         ];
 
         foreach ($dietTips as $tip) {
-            \App\Models\DietTip::updateOrCreate([
+            DietTip::updateOrCreate([
                 'title' => $tip['title'],
             ], $tip);
         }
 
-        $dokterUser = \App\Models\User::where('email', 'dokter@example.com')->first();
-        $adminUser = \App\Models\User::where('email', 'admin@example.com')->first();
+        $dokterUser = User::where('email', 'dokter@example.com')->first();
+        $adminUser = User::where('email', 'admin@example.com')->first();
 
         if ($dokterUser) {
             $dokterUser->update(['specialization' => 'Gizi Klinis']);
@@ -225,36 +228,84 @@ class DatabaseSeeder extends Seeder
 
         $healthyMenus = [
             [
-                'title' => 'Salad Ayam Mediterania',
-                'description' => 'Paket salad rendah kalori dengan sayuran segar, ayam panggang, dan saus lemon ringan.',
-                'calories' => 320,
-                'category' => 'Salad',
+                'title'          => 'Salad Ayam Mediterania',
+                'description'    => 'Salad segar kaya protein dengan ayam panggang, sayuran berwarna, zaitun, dan saus lemon-minyak zaitun. Rendah kalori, tinggi serat, dan memuaskan.',
+                'calories'       => 320,
+                'category'       => 'Salad',
                 'specialization' => 'Umum',
-                'doctor_id' => $adminUser ? null : null,
+                'image'          => 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&q=80',
+                'recipe'         => "Bahan:\n- 150 g dada ayam tanpa kulit\n- 2 genggam selada romaine\n- 10 buah tomat ceri, belah dua\n- ½ mentimun, potong dadu\n- 50 g zaitun hitam\n- 30 g keju feta (opsional)\n\nSaus:\n- 2 sdm minyak zaitun extra virgin\n- 1 sdm perasan lemon\n- ½ sdt oregano kering\n- Garam & merica secukupnya\n\nCara Membuat:\n1. Lumuri ayam dengan minyak zaitun, garam, dan merica. Panggang 15–18 menit hingga matang. Istirahatkan 5 menit, lalu iris.\n2. Campur semua bahan saus dalam mangkuk kecil.\n3. Tata selada, tomat, mentimun, dan zaitun di piring.\n4. Letakkan irisan ayam di atas sayuran.\n5. Siramkan saus dan tabur keju feta. Sajikan segera.",
+                'doctor_id'      => null,
             ],
             [
-                'title' => 'Nasi Merah & Sayuran Panggang',
-                'description' => 'Menu seimbang dengan nasi merah, sayuran panggang, dan sumber protein rendah lemak.',
-                'calories' => 420,
-                'category' => 'Utama',
+                'title'          => 'Nasi Merah & Sayuran Panggang',
+                'description'    => 'Menu makan siang seimbang dengan nasi merah berserat tinggi, sayuran panggang aneka warna, dan tahu bumbu kecap. Kaya serat, vitamin, dan antioksidan.',
+                'calories'       => 420,
+                'category'       => 'Utama',
                 'specialization' => 'Umum',
-                'doctor_id' => $adminUser ? null : null,
+                'image'          => 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&q=80',
+                'recipe'         => "Bahan:\n- 150 g nasi merah (dari 80 g beras merah)\n- 200 g campuran paprika merah & kuning, potong kotak\n- 150 g brokoli, potong floret\n- 100 g tahu, potong dadu\n- 1 sdm kecap asin rendah natrium\n- 1 sdm minyak zaitun\n- ½ sdt bawang putih bubuk\n- Garam & merica secukupnya\n\nCara Membuat:\n1. Masak nasi merah sesuai petunjuk (rasio 1:2 dengan air, masak ±40 menit).\n2. Campur sayuran dan tahu dengan minyak zaitun, kecap, bawang putih, garam, dan merica.\n3. Panggang dalam oven 200°C selama 20–25 menit, aduk sekali di tengah waktu, hingga sayuran sedikit karamelisasi.\n4. Sajikan sayuran panggang di atas nasi merah.",
+                'doctor_id'      => null,
             ],
             [
-                'title' => 'Smoothie Hijau Detox',
-                'description' => 'Kombinasi bayam, alpukat, yogurt rendah lemak, dan madu untuk membantu detoksifikasi dan energi.',
-                'calories' => 180,
-                'category' => 'Minuman',
+                'title'          => 'Smoothie Hijau Detox',
+                'description'    => 'Minuman bergizi padat dari bayam segar, alpukat, pisang, dan yogurt. Kaya serat, lemak sehat, dan probiotik untuk membantu detoksifikasi alami tubuh.',
+                'calories'       => 180,
+                'category'       => 'Minuman',
                 'specialization' => 'Gizi Klinis',
-                'doctor_id' => $dokterUser ? $dokterUser->id : null,
+                'image'          => 'https://images.unsplash.com/photo-1610970881699-44a5587cabec?w=600&q=80',
+                'recipe'         => "Bahan:\n- 2 genggam bayam segar\n- ½ buah alpukat matang\n- 1 buah pisang beku\n- 150 ml yogurt plain tanpa lemak\n- 100 ml air kelapa\n- 1 sdt madu (opsional)\n- 3–4 es batu\n\nCara Membuat:\n1. Masukkan semua bahan ke dalam blender.\n2. Blender dengan kecepatan tinggi selama 60 detik hingga benar-benar halus.\n3. Cicipi dan tambahkan madu jika kurang manis.\n4. Tuang ke dalam gelas dan konsumsi segera untuk nutrisi optimal.\n\nTip: Bekukan bayam sebelumnya agar smoothie lebih dingin dan segar.",
+                'doctor_id'      => null,
             ],
             [
-                'title' => 'Sup Kembang Kol Rempah',
-                'description' => 'Sup krim kembang kol rendah kalori dengan rempah alami untuk dukungan pencernaan yang baik.',
-                'calories' => 150,
-                'category' => 'Sup',
+                'title'          => 'Sup Kembang Kol Rempah',
+                'description'    => 'Sup krim kembang kol rendah kalori dengan kunyit dan jahe untuk mendukung pencernaan dan mengurangi peradangan. Hangat, mengenyangkan, dan bebas gluten.',
+                'calories'       => 150,
+                'category'       => 'Sup',
                 'specialization' => 'Gizi Klinis',
-                'doctor_id' => $dokterUser ? $dokterUser->id : null,
+                'image'          => 'https://images.unsplash.com/photo-1547592180-85f173990554?w=600&q=80',
+                'recipe'         => "Bahan:\n- 1 kepala kembang kol (±500 g), potong floret\n- 1 bawang bombay, cincang\n- 3 siung bawang putih\n- 1 sdt kunyit bubuk\n- ½ sdt jahe bubuk\n- ½ sdt jintan bubuk\n- 700 ml kaldu sayuran\n- 100 ml santan light\n- 1 sdm minyak zaitun\n- Garam & merica secukupnya\n\nCara Membuat:\n1. Panaskan minyak zaitun di panci, tumis bawang bombay 5 menit hingga lunak.\n2. Tambahkan bawang putih, kunyit, jahe, dan jintan. Tumis 1 menit hingga harum.\n3. Masukkan kembang kol dan kaldu sayuran. Didihkan, kecilkan api, masak 15 menit.\n4. Blender hingga halus menggunakan blender tangan.\n5. Tambahkan santan light, panaskan kembali tanpa mendidih. Koreksi rasa.",
+                'doctor_id'      => null,
+            ],
+            [
+                'title'          => 'Overnight Oats Buah Segar',
+                'description'    => 'Sarapan praktis tinggi serat dan protein dengan oat, susu almond, chia seed, dan buah segar. Siapkan malam hari, siap dimakan pagi tanpa memasak.',
+                'calories'       => 290,
+                'category'       => 'Sarapan',
+                'specialization' => 'Umum',
+                'image'          => 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&q=80',
+                'recipe'         => "Bahan:\n- 50 g oat gulung (rolled oats)\n- 200 ml susu almond tanpa gula\n- 1 sdm biji chia\n- 1 sdt madu atau sirup maple\n- ½ sdt vanila ekstrak\n- Topping: stroberi, blueberry, pisang iris, granola\n\nCara Membuat:\n1. Campur oat, susu almond, biji chia, madu, dan vanila dalam toples kaca.\n2. Aduk rata, tutup rapat.\n3. Simpan di kulkas minimal 6 jam atau semalaman.\n4. Saat akan disajikan, tambahkan topping buah segar dan granola.\n5. Tambahkan sedikit susu jika terlalu kental.",
+                'doctor_id'      => null,
+            ],
+            [
+                'title'          => 'Bowl Quinoa & Telur Rebus',
+                'description'    => 'Bowl bergizi tinggi dengan quinoa kaya protein lengkap, telur rebus, edamame, dan alpukat. Cocok untuk atlet atau yang sedang membangun massa otot.',
+                'calories'       => 480,
+                'category'       => 'Utama',
+                'specialization' => 'Umum',
+                'image'          => 'https://images.unsplash.com/photo-1543339308-43e59d6b73a6?w=600&q=80',
+                'recipe'         => "Bahan:\n- 80 g quinoa kering\n- 2 butir telur\n- 100 g edamame rebus\n- ½ alpukat, iris\n- 1 wortel, serut\n- Saus: 1 sdm kecap asin, 1 sdt minyak wijen, ½ sdt perasan lemon, ½ sdt biji wijen\n\nCara Membuat:\n1. Masak quinoa: cuci bersih, masak dengan 160 ml air selama 15 menit hingga air terserap dan biji melengkung.\n2. Rebus telur 7 menit untuk kuning matang tapi masih lembut, kupas dan belah.\n3. Campur bahan saus dalam mangkuk kecil.\n4. Tata quinoa dalam bowl, susun telur, edamame, wortel serut, dan alpukat.\n5. Siramkan saus dan tabur biji wijen.",
+                'doctor_id'      => null,
+            ],
+            [
+                'title'          => 'Jus Bit Wortel Jahe',
+                'description'    => 'Minuman anti-inflamasi dengan bit yang kaya nitrat, wortel tinggi beta-karoten, dan jahe untuk menghangatkan tubuh. Bantu meningkatkan stamina dan imunitas.',
+                'calories'       => 110,
+                'category'       => 'Minuman',
+                'specialization' => 'Umum',
+                'image'          => 'https://images.unsplash.com/photo-1622597467836-f3285f2131b8?w=600&q=80',
+                'recipe'         => "Bahan:\n- 1 buah bit ukuran sedang, kupas potong\n- 2 buah wortel ukuran sedang, kupas potong\n- 2 cm jahe segar, kupas\n- 1 buah jeruk peras\n- 150 ml air matang\n- Es batu secukupnya\n\nCara Membuat:\n1. Masukkan bit, wortel, dan jahe ke dalam juicer atau blender.\n2. Tambahkan air dan proses hingga halus.\n3. Jika menggunakan blender, saring dengan kain tipis atau saringan halus.\n4. Tambahkan perasan jeruk, aduk rata.\n5. Sajikan dengan es batu. Konsumsi segera setelah dibuat.\n\nCatatan: Jus bit dapat mewarnai urine menjadi merah — ini normal dan tidak berbahaya.",
+                'doctor_id'      => null,
+            ],
+            [
+                'title'          => 'Ikan Salmon Panggang Lemon',
+                'description'    => 'Fillet salmon panggang dengan saus lemon-dill, disajikan dengan asparagus dan kentang kukus. Kaya omega-3 untuk kesehatan jantung dan otak.',
+                'calories'       => 380,
+                'category'       => 'Utama',
+                'specialization' => 'Kardiologi',
+                'image'          => 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=600&q=80',
+                'recipe'         => "Bahan:\n- 150 g fillet salmon segar\n- 1 sdm minyak zaitun\n- 1 sdm perasan lemon\n- 1 siung bawang putih, parut\n- 1 sdt dill segar atau ½ sdt kering\n- 200 g asparagus\n- 150 g kentang kecil, belah dua\n- Garam & merica secukupnya\n\nCara Membuat:\n1. Panaskan oven ke 200°C.\n2. Kukus kentang 10 menit hingga setengah matang.\n3. Campur minyak zaitun, lemon, bawang putih, garam, dan merica.\n4. Olesi salmon dengan 2/3 campuran saus, biarkan marinasi 10 menit.\n5. Tata salmon, asparagus, dan kentang di loyang. Siram sisa saus.\n6. Panggang 12–15 menit hingga salmon mudah dikelupas dengan garpu.",
+                'doctor_id'      => null,
             ],
         ];
 

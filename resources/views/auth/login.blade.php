@@ -60,6 +60,22 @@
                                         <label class="form-check-label" for="rememberMe">Ingat saya</label>
                                     </div>
 
+                                    {{-- CAPTCHA --}}
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Verifikasi Keamanan</label>
+                                        <div class="d-flex align-items-center gap-3 mb-2">
+                                            <div class="px-4 py-2 rounded-3 fw-bold text-white text-center"
+                                                 style="background:linear-gradient(135deg,#157347,#28a745);font-size:1.3rem;letter-spacing:2px;min-width:130px;user-select:none;">
+                                                {{ $captcha['num1'] }} + {{ $captcha['num2'] }} = ?
+                                            </div>
+                                        </div>
+                                        <input type="number" name="captcha" class="form-control form-control-lg @error('captcha') is-invalid @enderror"
+                                               placeholder="Masukkan hasil penjumlahan" required autocomplete="off">
+                                        @error('captcha')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+
                                     <div class="text-center">
                                         <button type="submit" class="btn btn-lg btn-success w-100 mt-4 mb-0">
                                             Sign in

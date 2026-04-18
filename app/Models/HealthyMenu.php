@@ -18,6 +18,7 @@ class HealthyMenu extends Model
         'specialization',
         'doctor_id',
         'image',
+        'recipe',
     ];
 
     public function doctor()
