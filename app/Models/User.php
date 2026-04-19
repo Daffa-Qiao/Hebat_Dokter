@@ -27,6 +27,8 @@ class User extends Authenticatable
         'experience',
         'phone',
         'photo',
+        'email_verification_code',
+        'email_verification_expires_at',
     ];
 
     /**
@@ -45,8 +47,9 @@ class User extends Authenticatable
      * @var array<string, string>
      */
     protected $casts = [
-        'email_verified_at' => 'datetime',
-        'password' => 'hashed',
+        'email_verified_at'             => 'datetime',
+        'email_verification_expires_at' => 'datetime',
+        'password'                      => 'hashed',
     ];
 
     public function reservations()

@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Mail;
 use App\Models\User;
+use App\Mail\VerificationCodeMail;
 use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
@@ -39,6 +41,15 @@ class UserController extends Controller
 
         if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
+
+            // Cek apakah email sudah diverifikasi
+            if (is_null(Auth::user()->email_verified_at)) {
+                $email = Auth::user()->email;
+                Auth::logout();
+                $this->generateCaptcha($request);
+                return redirect()->route('verify.email.show', ['email' => $email])
+                    ->withErrors(['email' => 'Email Anda belum diverifikasi. Silakan cek email dan masukkan kode verifikasi.']);
+            }
 
             if ($remember) {
                 Cookie::queue('remembered_email', $request->email, 60 * 24 * 30);
@@ -84,15 +95,110 @@ class UserController extends Controller
         }
 
         $user = User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
+            'name'     => $validated['name'],
+            'email'    => $validated['email'],
             'password' => bcrypt($validated['password']),
-            'role' => 'pasien',
-            'phone' => $validated['phone'],
-            'photo' => $photoPath,
+            'role'     => 'pasien',
+            'phone'    => $validated['phone'],
+            'photo'    => $photoPath,
         ]);
+
+        $code    = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+        $expires = now()->addMinutes(10);
+
+        // Simpan langsung ke DB agar pasti tersimpan
+        \DB::table('users')->where('id', $user->id)->update([
+            'email_verification_code'       => $code,
+            'email_verification_expires_at' => $expires,
+        ]);
+
+        Mail::to($user->email)->send(new VerificationCodeMail($code, $user->name));
+
+        return redirect()->route('verify.email.show', ['email' => $user->email]);
+    }
+
+    public function showVerifyEmail(Request $request)
+    {
+        $email = $request->query('email');
+        if (!$email) {
+            return redirect()->route('register');
+        }
+
+        $user = User::where('email', $email)->first();
+
+        if (!$user) {
+            return redirect()->route('register')
+                ->withErrors(['email' => 'Akun dengan email tersebut tidak ditemukan.']);
+        }
+
+        if (!is_null($user->email_verified_at)) {
+            return redirect()->route('login')
+                ->with('success', 'Email Anda sudah terverifikasi. Silakan login.');
+        }
+
+        return view('auth.verify-email', compact('email'));
+    }
+
+    public function submitVerifyEmail(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'code'  => 'required|string|size:6',
+        ]);
+
+        $user = User::where('email', $request->email)
+            ->whereNull('email_verified_at')
+            ->first();
+
+        if (!$user) {
+            return back()->withErrors(['code' => 'Akun tidak ditemukan atau sudah diverifikasi.']);
+        }
+
+        // Ambil nilai fresh langsung dari DB untuk menghindari isu cache/cast
+        $dbUser = \DB::table('users')->where('id', $user->id)->first();
+
+        if ((string) $dbUser->email_verification_code !== (string) $request->code) {
+            return back()->withErrors(['code' => 'Kode verifikasi salah.']);
+        }
+
+        if ($dbUser->email_verification_expires_at && now()->isAfter($dbUser->email_verification_expires_at)) {
+            return back()->withErrors(['code' => 'Kode verifikasi sudah kadaluarsa. Silakan minta kode baru.']);
+        }
+
+        \DB::table('users')->where('id', $user->id)->update([
+            'email_verified_at'             => now(),
+            'email_verification_code'       => null,
+            'email_verification_expires_at' => null,
+        ]);
+
         Auth::login($user);
         return $this->redirectToDashboard();
+    }
+
+    public function resendVerificationCode(Request $request)
+    {
+        $request->validate(['email' => 'required|email']);
+
+        $user = User::where('email', $request->email)
+            ->whereNull('email_verified_at')
+            ->first();
+
+        if (!$user) {
+            return back()->withErrors(['code' => 'Akun tidak ditemukan atau sudah diverifikasi.']);
+        }
+
+        $code    = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+        $expires = now()->addMinutes(10);
+
+        \DB::table('users')->where('id', $user->id)->update([
+            'email_verification_code'       => $code,
+            'email_verification_expires_at' => $expires,
+        ]);
+
+        Mail::to($user->email)->send(new VerificationCodeMail($code, $user->name));
+
+        return redirect()->route('verify.email.show', ['email' => $user->email])
+            ->with('success', 'Kode verifikasi baru telah dikirim ke email Anda.');
     }
 
     private function redirectToDashboard()

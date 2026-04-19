@@ -1,126 +1,165 @@
-# Konsultasi Dokter
+# 🏥 Hebat Dokter
 
-Aplikasi konsultasi dokter berbasis Laravel dengan sistem role admin, dokter, dan pasien.
+Aplikasi manajemen kesehatan berbasis web yang menghubungkan pasien dengan dokter, dilengkapi fitur reservasi, konsultasi, artikel kesehatan, tantangan harian, dan verifikasi email.
 
-## Fitur Utama
+---
 
-### Admin
-- Dashboard admin
-- Manajemen akun (CRUD user) dengan modal create
-- Manajemen reservasi (CRUD) dengan modal create
+## 👥 Tim Pengembang
 
-### Dokter
-- Dashboard dokter
-- Lihat reservasi masuk
-- Update status reservasi
+| No | Nama | NIM | Kelas | Peran |
+|----|------|-----|-------|-------|
+| 1 | [Daffa Reivan Fathur Rahman] | [41825010071] | Ketua Tim |
+| 2 | [Rafi Bima Tjahyadi] | [41825010043] | Anggota |
+| 3 | [Dafa Pratama] | [41825010040] | Anggota |
 
-### Pasien
-- Dashboard pasien
-- Buat reservasi konsultasi
-- Lihat riwayat reservasi
+---
 
-## Modul Manajemen Akun (Admin)
+## 🚀 Cara Menjalankan Aplikasi
 
-Modul ini memungkinkan admin untuk mengelola semua akun user dalam sistem.
+### Prasyarat
+- PHP >= 8.1
+- Composer
+- PostgreSQL
+- Node.js & NPM
 
-### Fitur:
-1. **List User** - Menampilkan semua user dengan pagination
-2. **Search & Filter** - Pencarian berdasarkan nama/email dan filter berdasarkan role
-3. **Tambah User** - Modal form untuk menambah user baru
-4. **Edit User** - Form untuk mengubah data user
-5. **Hapus User** - Hapus user (admin tidak bisa menghapus akun sendiri)
+### Langkah Instalasi
 
-### Akses:
-- Hanya admin yang bisa mengakses
-- Menggunakan middleware `role:admin`
-- Dilengkapi dengan Policy untuk authorization
+```bash
+# 1. Clone repository
+git clone <url-repo>
+cd Hebat-Dokter
 
-### Route:
-```
-GET    /admin/users              - List semua user
-POST   /admin/users              - Simpan user baru (via modal)
-GET    /admin/users/{user}/edit  - Form edit user
-PUT    /admin/users/{user}       - Update user
-DELETE /admin/users/{user}       - Hapus user
-```
+# 2. Install dependensi PHP
+composer install
 
-### File yang Dibuat:
-- `app/Http/Controllers/Admin/UserManagementController.php`
-- `app/Policies/UserPolicy.php`
-- `resources/views/admin/users/index.blade.php` (dengan modal create)
-- `resources/views/admin/users/edit.blade.php`
+# 3. Install dependensi frontend
+npm install
 
-### Modal Features:
-- Bootstrap modal untuk create user
-- Form validation dengan error handling
-- Auto-reset form ketika modal ditutup/dibuka
-- Auto-open modal jika ada validation errors
+# 4. Salin file environment
+cp .env.example .env
 
-## Modul Manajemen Reservasi (Admin)
+# 5. Generate application key
+php artisan key:generate
 
-Modul ini memungkinkan admin untuk mengelola semua reservasi dalam sistem.
+# 6. Konfigurasi database di .env
+# DB_CONNECTION=pgsql
+# DB_HOST=127.0.0.1
+# DB_PORT=5432
+# DB_DATABASE=nama_database
+# DB_USERNAME=username
+# DB_PASSWORD=password
 
-### Fitur:
-1. **List Reservasi** - Menampilkan semua reservasi dengan pagination
-2. **Search & Filter** - Pencarian berdasarkan nama pasien/dokter dan filter berdasarkan status
-3. **Tambah Reservasi** - Modal form untuk menambah reservasi baru
-4. **Edit Reservasi** - Form untuk mengubah data reservasi
-5. **Detail Reservasi** - Lihat detail lengkap reservasi
-6. **Hapus Reservasi** - Hapus reservasi
+# 7. Konfigurasi SMTP di .env (untuk verifikasi email)
+# MAIL_MAILER=smtp
+# MAIL_HOST=smtp.gmail.com
+# MAIL_PORT=587
+# MAIL_USERNAME=email@gmail.com
+# MAIL_PASSWORD=app_password_gmail
+# MAIL_ENCRYPTION=tls
+# MAIL_FROM_ADDRESS=email@gmail.com
 
-### Akses:
-- Hanya admin yang bisa mengakses
-- Menggunakan middleware `role:admin`
+# 8. Jalankan migrasi dan seeder
+php artisan migrate
+php artisan db:seed
 
-### Route:
-```
-GET    /admin/reservations              - List semua reservasi
-POST   /admin/reservations              - Simpan reservasi baru (via modal)
-GET    /admin/reservations/{id}         - Detail reservasi
-GET    /admin/reservations/{id}/edit    - Form edit reservasi
-PUT    /admin/reservations/{id}         - Update reservasi
-DELETE /admin/reservations/{id}         - Hapus reservasi
+# 9. Buat symlink storage
+php artisan storage:link
+
+# 10. Build aset frontend
+npm run build
+
+# 11. Jalankan server
+php artisan serve
 ```
 
-### File yang Dibuat:
-- `app/Http/Controllers/Admin/ReservationController.php`
-- `resources/views/admin/reservations/index.blade.php` (dengan modal create)
-- `resources/views/admin/reservations/show.blade.php`
-- `resources/views/admin/reservations/edit.blade.php`
+Aplikasi berjalan di **http://localhost:8000**
 
-### Modal Features:
-- Bootstrap modal untuk create reservasi
-- Form validation dengan error handling
-- Auto-reset form ketika modal ditutup/dibuka
-- Auto-open modal jika ada validation errors
-- Dropdown untuk pilih pasien dan dokter
+### Akun Default (dari Seeder)
 
-## Instalasi
+| Role | Email | Password |
+|------|-------|----------|
+| Admin | admin@example.com | password |
+| Dokter | dokter@example.com | password |
+| Pasien | pasien@example.com | password |
 
-1. Clone repository
-2. Install dependencies: `composer install`
-3. Copy `.env.example` ke `.env`
-4. Generate key: `php artisan key:generate`
-5. Setup database di `.env`
-6. Run migration: `php artisan migrate`
-7. Run seeder: `php artisan db:seed`
-8. Serve aplikasi: `php artisan serve`
+> Akun seeder tidak memerlukan verifikasi email.
 
-## Struktur Database
+---
 
-### Users Table
-- `id` - Primary key
-- `name` - Nama lengkap
-- `email` - Email (unique)
-- `password` - Password (hashed)
-- `role` - Role (admin/dokter/pasien)
-- `created_at` - Timestamp
-- `updated_at` - Timestamp
+## 🛠️ Stack Teknologi
 
-## Security
+### Backend
+| Teknologi | Versi | Keterangan |
+|-----------|-------|------------|
+| PHP | ^8.1 | Bahasa pemrograman utama |
+| Laravel | ^10.10 | Framework PHP |
+| Laravel Sanctum | ^3.3 | API authentication |
+| PostgreSQL | - | Database relasional |
 
+### Frontend
+| Teknologi | Keterangan |
+|-----------|------------|
+| Blade | Template engine Laravel |
+| Bootstrap 5 | Framework CSS |
+| Vite | Build tool frontend |
+| Font Awesome | Ikon |
+
+### Library & Tools
+| Library | Keterangan |
+|---------|------------|
+| Guzzle HTTP | HTTP client |
+| PHPUnit | Unit testing |
+| Laravel Tinker | REPL interaktif |
+| Faker | Data dummy untuk testing |
+
+---
+
+## AI Tools Used
+
+This project utilized AI tools to enhance development efficiency and accuracy. Specifically, AI assistance was used for:
+
+- Debugging and resolving CAPTCHA issues.
+- Updating documentation, including the README file and creating the INSTRUCTION.md file.
+- Ensuring seeded accounts are correctly handled in the database.
+
+These tools streamlined the development process and ensured high-quality outcomes.
+
+---
+
+## ✨ Fitur Utama
+
+### 👤 Autentikasi
+- Register dengan verifikasi kode OTP via email (6 digit, berlaku 10 menit)
+- Login dengan proteksi CAPTCHA matematika
+- Role-based access control (Admin, Dokter, Pasien)
+
+### 🏥 Pasien
+- Dashboard dengan statistik reservasi
+- Buat & kelola reservasi konsultasi
+- Chat dengan dokter dalam reservasi
+- Tantangan kesehatan harian dengan poin
+- Kalkulator BMI & kalori
+- Akses menu sehat berdasarkan riwayat penyakit
+
+### 👨‍⚕️ Dokter
+- Dashboard dengan statistik reservasi
+- Kelola status reservasi
+- Tulis & publikasikan artikel kesehatan
+- Kelola menu sehat
+
+### 🔧 Admin
+- Dashboard statistik keseluruhan
+- Manajemen pengguna (CRUD)
+- Manajemen reservasi
+- Manajemen event, tips diet, menu sehat, artikel
+
+---
+
+## 🔒 Keamanan
 - Password di-hash menggunakan bcrypt
-- Role-based access control
+- CSRF protection pada semua form
+- Role-based middleware
 - Policy-based authorization
-- CSRF protection
-- Input validation
+- Input validation & sanitization
+- Verifikasi email OTP sebelum akses akun
+

@@ -34,6 +34,7 @@ class DatabaseSeeder extends Seeder
             'bio' => 'Spesialis Penyakit Dalam Konsultan Gastroenterologi-Hepatologi lulusan Universitas Indonesia. Ahli dalam penanganan gangguan saluran pencernaan, maag kronis, hepatitis, dan sindrom iritasi usus besar.',
             'experience' => '10 tahun menangani kasus gastroenterologi dan penyakit hati di rumah sakit tersier.',
             'phone' => '081234567890',
+            'email_verified_at' => now(),
         ]);
 
         // Seeder dokter tambahan
@@ -107,6 +108,7 @@ class DatabaseSeeder extends Seeder
                 'bio' => $doctor['bio'],
                 'experience' => $doctor['experience'],
                 'phone' => $doctor['phone'],
+                'email_verified_at' => now(),
             ]);
         }
 
@@ -118,6 +120,7 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('password'),
             'role' => 'admin',
             'phone' => '081387654321',
+            'email_verified_at' => now(),
         ]);
 
         // Seeder user role pasien
@@ -128,6 +131,7 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('password'),
             'role' => 'pasien',
             'phone' => '081397654321',
+            'email_verified_at' => now(),
         ]);
 
         $additionalPatients = [
@@ -156,6 +160,7 @@ class DatabaseSeeder extends Seeder
                 'password' => bcrypt('password'),
                 'role' => 'pasien',
                 'phone' => $patient['phone'],
+                'email_verified_at' => now(),
             ]);
         }
 

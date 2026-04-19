@@ -105,7 +105,7 @@
                                             </div>
                                             <p class="mb-4 text-sm mx-auto">
                                                 Sudah punya akun?
-                                                <a href="{{ route('login') }}" class="text-success">Masuk di sini</a>
+                                                <a href="{{ route('login') }}" class="text-success" style="color:green;"><u>Masuk di sini</u></a>
                                             </p>
                                         </div>
 

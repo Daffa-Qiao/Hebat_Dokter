@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\HealthyMenuController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\Dokter\HealthyMenuController as DokterHealthyMenuController;
 use App\Http\Controllers\Dokter\ArticleController as DokterArticleController;
+use App\Http\Controllers\Admin\ArticleController as AdminArticleController;
 use App\Models\HealthyMenu;
 use App\Models\Event;
 use App\Models\DietTip;
@@ -57,6 +58,9 @@ Route::get('login', [UserController::class, 'showLogin'])->name('login');
 Route::post('login', [UserController::class, 'login']);
 Route::get('register', [UserController::class, 'showRegister'])->name('register');
 Route::post('register', [UserController::class, 'register']);
+Route::get('verify-email', [UserController::class, 'showVerifyEmail'])->name('verify.email.show');
+Route::post('verify-email', [UserController::class, 'submitVerifyEmail'])->name('verify.email.submit');
+Route::post('verify-email/resend', [UserController::class, 'resendVerificationCode'])->name('verify.email.resend');
 Route::post('logout', [UserController::class, 'logout'])->name('logout');
 
 // Dashboard untuk masing-masing role
@@ -138,8 +142,8 @@ Route::middleware(['auth', 'role:dokter'])->prefix('dokter')->name('dokter.')->g
     Route::get('reservations/{reservation}', [ReservationController::class, 'show'])->name('reservations.show');
     Route::post('reservations/{reservation}/accept', [ReservationController::class, 'accept'])->name('reservations.accept');
     Route::post('reservations/{reservation}/reject', [ReservationController::class, 'reject'])->name('reservations.reject');
-    Route::resource('healthy-menus', \App\Http\Controllers\Dokter\HealthyMenuController::class)->except(['show']);
-    Route::resource('articles', \App\Http\Controllers\Dokter\ArticleController::class)->except(['show']);
+    Route::resource('healthy-menus', DokterHealthyMenuController::class)->except(['show']);
+    Route::resource('articles', DokterArticleController::class)->except(['show']);
 });
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -148,7 +152,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::resource('events', EventController::class)->except(['show']);
     Route::resource('diet-tips', DietTipController::class)->except(['show']);
     Route::resource('healthy-menus', HealthyMenuController::class)->except(['show']);
-    Route::resource('articles', \App\Http\Controllers\Admin\ArticleController::class)->except(['show']);
+    Route::resource('articles', AdminArticleController::class)->except(['show']);
 });
 
 // Ubah Profil

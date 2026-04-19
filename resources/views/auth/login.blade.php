@@ -82,10 +82,10 @@
                                         </button>
                                     </div>
 
-                                    @if($errors->any())
+                                    @if($errors->has('email'))
                                         <div class="alert alert-danger mt-3" role="alert">
                                             <i class="fas fa-exclamation-triangle me-2"></i>
-                                            <strong>Peringatan:</strong> Email atau password yang dimasukkan salah.
+                                            {{ $errors->first('email') }}
                                         </div>
                                     @endif
                                 </form>
