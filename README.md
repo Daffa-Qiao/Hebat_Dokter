@@ -6,8 +6,8 @@ Aplikasi manajemen kesehatan berbasis web yang menghubungkan pasien dengan dokte
 
 ## 👥 Tim Pengembang
 
-| No | Nama | NIM | Kelas | Peran |
-|----|------|-----|-------|-------|
+| No | Nama | NIM | Kelas |
+|----|------|-----|-------|
 | 1 | [Daffa Reivan Fathur Rahman] | [41825010071] | Ketua Tim |
 | 2 | [Rafi Bima Tjahyadi] | [41825010043] | Anggota |
 | 3 | [Dafa Pratama] | [41825010040] | Anggota |
