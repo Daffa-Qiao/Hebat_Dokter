@@ -37,7 +37,8 @@
                             <img src="{{ asset('storage/'.$doctor->photo) }}"
                                  class="rounded-circle flex-shrink-0 border border-3 border-success"
                                  style="width:90px;height:90px;object-fit:cover;"
-                                 alt="{{ $doctor->name }}">
+                                 alt="{{ $doctor->name }}"
+                                 onerror="this.onerror=null;this.src='{{ asset('img/logo.png') }}' ">
                         @else
                             <div class="rounded-circle bg-success text-white d-flex align-items-center justify-content-center flex-shrink-0"
                                  style="width:90px;height:90px;font-size:2.2rem;font-weight:700;">
@@ -109,7 +110,8 @@
                         <img src="{{ asset('storage/'.$doctor->photo) }}"
                              class="rounded-circle border border-3 border-white mb-3"
                              style="width:80px;height:80px;object-fit:cover;"
-                             alt="{{ $doctor->name }}">
+                             alt="{{ $doctor->name }}"
+                             onerror="this.onerror=null;this.src='{{ asset('img/logo.png') }}' ">
                     @else
                         <div class="rounded-circle bg-white text-success d-inline-flex align-items-center justify-content-center mb-3"
                              style="width:80px;height:80px;font-size:2rem;font-weight:700;">

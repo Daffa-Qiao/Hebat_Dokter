@@ -18,8 +18,13 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->enum('role', ['pasien', 'dokter', 'admin'])->default('pasien');
+            $table->string('specialization')->nullable();
+            $table->text('bio')->nullable();
+            $table->string('experience')->nullable();
             $table->string('phone')->nullable();
             $table->string('photo')->nullable();
+            $table->string('email_verification_code', 6)->nullable()->after('email_verified_at');
+            $table->timestamp('email_verification_expires_at')->nullable()->after('email_verification_code');
             $table->rememberToken();
             $table->timestamps();
         });

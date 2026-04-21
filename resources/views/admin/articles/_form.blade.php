@@ -19,7 +19,8 @@
     <label for="thumbnail" class="form-label fw-bold">Thumbnail (opsional)</label>
     @if(isset($article) && $article->thumbnail)
         <div class="mb-2">
-            <img src="{{ asset('storage/' . $article->thumbnail) }}" alt="Thumbnail" style="height:80px; border-radius:6px;">
+            <img src="{{ asset('storage/' . $article->thumbnail) }}" alt="Thumbnail" style="height:80px; border-radius:6px;"
+                 onerror="this.onerror=null;this.src='{{ asset('img/logo.png') }}' ">
         </div>
     @endif
     <input type="file" name="thumbnail" id="thumbnail" class="form-control" accept="image/*">

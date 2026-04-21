@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Models\User;
 use App\Mail\VerificationCodeMail;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -242,7 +243,7 @@ class UserController extends Controller
         for ($i = 1; $i <= 12; $i++) {
             $chartData[] = $reservasiPerBulan[$i] ?? 0;
         }
-        return view('dashboard-pasien', compact('jumlahReservasi', 'upcomingReservation', 'latestDoctors', 'latestEvents', 'latestDietTips', 'chartData'));
+        return view('pasien.dashboard', compact('jumlahReservasi', 'upcomingReservation', 'latestDoctors', 'latestEvents', 'latestDietTips', 'chartData'));
     }
 
     public function dashboard_dokter()
@@ -266,7 +267,7 @@ class UserController extends Controller
         for ($i = 1; $i <= 12; $i++) {
             $chartData[] = $reservasiPerBulan[$i] ?? 0;
         }
-        return view('dashboard-dokter', compact('menunggu', 'diterima', 'ditolak', 'upcomingAppointments', 'chartData'));
+        return view('dokter.dashboard', compact('menunggu', 'diterima', 'ditolak', 'upcomingAppointments', 'chartData'));
     }
 
     public function dashboard_admin()
@@ -276,6 +277,8 @@ class UserController extends Controller
         $totalDoctors = \App\Models\User::where('role', 'dokter')->count();
         $totalEvents = \App\Models\Event::count();
         $totalDietTips = \App\Models\DietTip::count();
+        $totalMenuSehat = \App\Models\HealthyMenu::count();
+        $totalArtikel = \App\Models\Article::count();
         $recentUsers = \App\Models\User::latest()->take(5)->get();
         $recentReservations = \App\Models\Reservation::with(['pasien', 'dokter'])->latest()->take(5)->get();
         // Data reservasi per bulan (12 bulan)
@@ -288,13 +291,13 @@ class UserController extends Controller
         for ($i = 1; $i <= 12; $i++) {
             $chartData[] = $reservasiPerBulan[$i] ?? 0;
         }
-        return view('dashboard-admin', compact('totalUser', 'totalReservasi', 'totalEvents', 'totalDoctors', 'totalDietTips', 'recentUsers', 'recentReservations', 'chartData'));
+        return view('admin.dashboard', compact('totalUser', 'totalReservasi', 'totalEvents', 'totalDoctors', 'totalDietTips', 'totalMenuSehat', 'totalArtikel', 'recentUsers', 'recentReservations', 'chartData'));
     }
 
     public function showEditProfile()
     {
         $user = auth()->user();
-        return view('profile.edit', compact('user'));
+        return view('pasien.profile.edit', compact('user'));
     }
 
     public function updateProfile(Request $request)
@@ -308,6 +311,10 @@ class UserController extends Controller
             'password' => 'nullable|confirmed|min:8',
         ]);
         if ($request->hasFile('photo')) {
+            // Hapus foto lama jika ada
+            if ($user->photo && Storage::disk('public')->exists($user->photo)) {
+                Storage::disk('public')->delete($user->photo);
+            }
             $photoPath = $request->file('photo')->store('photos', 'public');
             $user->photo = $photoPath;
         }

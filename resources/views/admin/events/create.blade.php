@@ -3,15 +3,22 @@
 
 @section('content')
 @include('layouts.navbars.dashboardnav')
-<div class="container-fluid py-4">
+<div class="container py-5">
+    <div class="rounded-3 p-4 mb-4 text-white" style="background:linear-gradient(135deg,#ffc107,#ff8f00);">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+                <h3 class="fw-bold mb-1"><i class="fas fa-calendar-plus me-2"></i>Tambah Event Baru</h3>
+                <p class="mb-0 opacity-75">Buat event kesehatan baru untuk dipublikasikan</p>
+            </div>
+            <a href="{{ route('admin.events.index') }}" class="btn btn-light btn-sm fw-semibold">
+                <i class="fas fa-arrow-left me-1"></i>Kembali
+            </a>
+        </div>
+    </div>
     <div class="row justify-content-center">
         <div class="col-lg-8">
-            <div class="card shadow-sm border-0">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h4 class="mb-0">Tambah Event Baru</h4>
-                    <a href="{{ route('admin.events.index') }}" class="btn btn-outline-secondary">Kembali</a>
-                </div>
-                <div class="card-body">
+            <div class="card border-0 shadow-sm" style="border-top:4px solid #ffc107;">
+                <div class="card-body p-4">
                     <form method="POST" action="{{ route('admin.events.store') }}" enctype="multipart/form-data">
                         @csrf
                         <div class="mb-3">

@@ -2,12 +2,22 @@
 @section('title', 'Tambah Artikel')
 @section('content')
 @include('layouts.navbars.dashboardnav')
-<div class="container py-4">
+<div class="container py-5">
+    <div class="rounded-3 p-4 mb-4 text-white" style="background:linear-gradient(135deg,#ffc107,#ff8f00);">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+                <h3 class="fw-bold mb-1"><i class="fas fa-pen-nib me-2"></i>Tambah Artikel</h3>
+                <p class="mb-0 opacity-75">Tulis artikel kesehatan baru untuk dipublikasikan</p>
+            </div>
+            <a href="{{ route('admin.articles.index') }}" class="btn btn-light btn-sm fw-semibold">
+                <i class="fas fa-arrow-left me-1"></i>Kembali
+            </a>
+        </div>
+    </div>
     <div class="row justify-content-center">
         <div class="col-md-9">
-            <div class="card shadow-sm border-0">
-                <div class="card-header bg-success text-white">Tambah Artikel Kesehatan</div>
-                <div class="card-body">
+            <div class="card border-0 shadow-sm" style="border-top:4px solid #ffc107;">
+                <div class="card-body p-4">
                     <form method="POST" action="{{ route('admin.articles.store') }}" enctype="multipart/form-data">
                         @csrf
                         @include('admin.articles._form')

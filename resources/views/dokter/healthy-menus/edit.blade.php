@@ -3,15 +3,22 @@
 
 @section('content')
 @include('layouts.navbars.dashboardnav')
-<div class="container-fluid py-4">
+<div class="container py-5">
+    <div class="rounded-3 p-4 mb-4 text-white" style="background:linear-gradient(135deg,#dc3545,#c62828);">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+                <h3 class="fw-bold mb-1"><i class="fas fa-utensils me-2"></i>Edit Menu Sehat</h3>
+                <p class="mb-0 opacity-75">Perbarui menu sehat: <strong>{{ $healthyMenu->title }}</strong></p>
+            </div>
+            <a href="{{ route('dokter.healthy-menus.index') }}" class="btn btn-light btn-sm fw-semibold">
+                <i class="fas fa-arrow-left me-1"></i>Kembali
+            </a>
+        </div>
+    </div>
     <div class="row justify-content-center">
         <div class="col-lg-8">
-            <div class="card shadow-sm border-0">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h4 class="mb-0">Edit Menu Sehat</h4>
-                    <a href="{{ route('dokter.healthy-menus.index') }}" class="btn btn-outline-secondary">Kembali</a>
-                </div>
-                <div class="card-body">
+            <div class="card border-0 shadow-sm" style="border-top:4px solid #dc3545;">
+                <div class="card-body p-4">
                     <form method="POST" action="{{ route('dokter.healthy-menus.update', $healthyMenu) }}" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
@@ -36,10 +43,16 @@
                             @error('description')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
                         <div class="mb-3">
+                            <label class="form-label">Resep</label>
+                            <textarea name="recipe" rows="5" class="form-control @error('recipe') is-invalid @enderror">{{ old('recipe', $healthyMenu->recipe) }}</textarea>
+                            @error('recipe')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>  
+                        <div class="mb-3">
                             <label class="form-label">Gambar Saat ini</label>
                             @if($healthyMenu->image)
                                 <div class="mb-2">
-                                    <img src="{{ asset('storage/' . $healthyMenu->image) }}" alt="Menu" class="img-fluid rounded" style="max-height: 200px;">
+                                    <img src="{{ asset('storage/' . $healthyMenu->image) }}" alt="Menu" class="img-fluid rounded" style="max-height: 200px;"
+                                         onerror="this.onerror=null;this.src='{{ asset('img/logo.png') }}' ">
                                 </div>
                             @else
                                 <div class="text-muted mb-2">Belum ada gambar.</div>

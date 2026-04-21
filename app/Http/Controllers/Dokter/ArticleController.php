@@ -41,7 +41,7 @@ class ArticleController extends Controller
             'content'        => $validated['content'],
             'specialization' => Auth::user()->specialization,
             'thumbnail'      => $path,
-            'published'      => $request->boolean('published', true),
+            'published'      => $request->boolean('published', false),
         ]);
 
         return redirect()->route('dokter.articles.index')->with('success', 'Artikel berhasil ditambahkan!');
@@ -75,7 +75,7 @@ class ArticleController extends Controller
             'title'     => $validated['title'],
             'content'   => $validated['content'],
             'thumbnail' => $validated['thumbnail'] ?? $article->thumbnail,
-            'published' => $request->boolean('published', true),
+            'published' => $request->boolean('published', false),
         ]);
 
         return redirect()->route('dokter.articles.index')->with('success', 'Artikel berhasil diperbarui!');

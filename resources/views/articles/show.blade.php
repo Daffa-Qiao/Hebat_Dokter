@@ -9,9 +9,10 @@
 </div>
 
 <div class="container py-5" style="max-width: 860px;">
-    @if($article->thumbnail)
-        <img src="{{ asset('storage/' . $article->thumbnail) }}" alt="{{ $article->title }}" class="w-100 rounded-3 mb-4" style="max-height:380px; object-fit:cover;">
-    @endif
+    <img src="{{ $article->thumbnail ? asset('storage/' . $article->thumbnail) : asset('img/logo.png') }}"
+         alt="{{ $article->title }}" class="w-100 rounded-3 mb-4"
+         style="max-height:380px; object-fit:cover;"
+         onerror="this.onerror=null;this.src='{{ asset('img/logo.png') }}' ">
 
     <div class="d-flex gap-2 mb-3 flex-wrap">
         @if($article->specialization)

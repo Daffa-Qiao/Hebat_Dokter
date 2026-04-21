@@ -13,11 +13,9 @@
 
     <div class="row">
         <div class="col-md-6">
-            @if($menu->image)
-                <img src="{{ asset('storage/' . $menu->image) }}" class="img-fluid rounded" alt="{{ $menu->title }}">
-            @else
-                <img src="{{ asset('img/logo.png') }}" class="img-fluid rounded" alt="Menu sehat">
-            @endif
+            <img src="{{ $menu->image ? asset('storage/' . $menu->image) : asset('img/logo.png') }}"
+                 class="img-fluid rounded" alt="{{ $menu->title }}"
+                 onerror="this.onerror=null;this.src='{{ asset('img/logo.png') }}' ">
         </div>
         <div class="col-md-6">
             <h4>Deskripsi</h4>

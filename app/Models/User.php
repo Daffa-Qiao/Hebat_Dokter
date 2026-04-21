@@ -29,6 +29,7 @@ class User extends Authenticatable
         'photo',
         'email_verification_code',
         'email_verification_expires_at',
+        'email_verified_at',
     ];
 
     /**

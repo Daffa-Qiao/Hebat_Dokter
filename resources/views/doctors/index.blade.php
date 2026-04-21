@@ -76,7 +76,8 @@
                                     <img src="{{ asset('storage/'.$doctor->photo) }}"
                                          class="rounded-circle flex-shrink-0"
                                          style="width:56px;height:56px;object-fit:cover;"
-                                         alt="{{ $doctor->name }}">
+                                         alt="{{ $doctor->name }}"
+                                         onerror="this.onerror=null;this.src='{{ asset('img/logo.png') }}' ">
                                 @else
                                     <div class="rounded-circle bg-success text-white d-flex align-items-center justify-content-center flex-shrink-0"
                                          style="width:56px;height:56px;font-size:1.4rem;font-weight:700;">

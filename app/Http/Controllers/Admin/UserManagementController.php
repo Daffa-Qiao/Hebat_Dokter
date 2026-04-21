@@ -65,6 +65,7 @@ class UserManagementController extends Controller
             'specialization' => $request->specialization,
             'bio' => $request->bio,
             'experience' => $request->experience,
+            'email_verified_at' => now(),
         ]);
 
         return redirect()->route('admin.users.index')
@@ -105,6 +106,7 @@ class UserManagementController extends Controller
             'specialization' => $request->specialization,
             'bio' => $request->bio,
             'experience' => $request->experience,
+            'email_verified_at' => now(),
         ]);
 
         // Update password if provided

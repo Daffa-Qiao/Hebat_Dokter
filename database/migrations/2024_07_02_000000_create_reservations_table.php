@@ -15,6 +15,8 @@ return new class extends Migration
             $table->dateTime('jadwal');
             $table->enum('status', ['pending', 'accepted', 'rejected'])->default('pending');
             $table->text('keterangan')->nullable();
+            $table->string('disease')->nullable();
+            $table->unsignedBigInteger('dokter_id')->nullable()->change();
             $table->timestamps();
 
             $table->foreign('pasien_id')->references('id')->on('users')->onDelete('cascade');

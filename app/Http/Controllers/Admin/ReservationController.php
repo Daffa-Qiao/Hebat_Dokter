@@ -33,11 +33,17 @@ class ReservationController extends Controller
 
         $reservations = $query->orderBy('created_at', 'desc')->paginate(10);
         
+        // Stats
+        $totalCount    = Reservation::count();
+        $pendingCount  = Reservation::where('status', 'pending')->count();
+        $acceptedCount = Reservation::where('status', 'accepted')->count();
+        $rejectedCount = Reservation::where('status', 'rejected')->count();
+
         // Get data for modal
         $pasiens = User::where('role', 'pasien')->get();
         $dokters = User::where('role', 'dokter')->get();
         
-        return view('admin.reservations.index', compact('reservations', 'pasiens', 'dokters'));
+        return view('admin.reservations.index', compact('reservations', 'pasiens', 'dokters', 'totalCount', 'pendingCount', 'acceptedCount', 'rejectedCount'));
     }
 
     /**

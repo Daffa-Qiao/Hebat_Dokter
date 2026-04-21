@@ -30,6 +30,7 @@ class HealthyMenuController extends Controller
             'calories' => 'nullable|integer|min:0',
             'category' => 'nullable|string|max:255',
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'recipe' => 'nullable|string',
         ]);
 
         $validated['doctor_id'] = auth()->id();
@@ -66,6 +67,7 @@ class HealthyMenuController extends Controller
             'calories' => 'nullable|integer|min:0',
             'category' => 'nullable|string|max:255',
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'recipe' => 'nullable|string',
         ]);
 
         $validated['specialization'] = auth()->user()->specialization ?? 'Umum';

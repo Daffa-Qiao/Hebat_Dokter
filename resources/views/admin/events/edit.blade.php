@@ -3,15 +3,22 @@
 
 @section('content')
 @include('layouts.navbars.dashboardnav')
-<div class="container-fluid py-4">
+<div class="container py-5">
+    <div class="rounded-3 p-4 mb-4 text-white" style="background:linear-gradient(135deg,#ffc107,#ff8f00);">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+                <h3 class="fw-bold mb-1"><i class="fas fa-calendar-edit me-2"></i>Edit Event</h3>
+                <p class="mb-0 opacity-75">Perbarui informasi event: <strong>{{ $event->title }}</strong></p>
+            </div>
+            <a href="{{ route('admin.events.index') }}" class="btn btn-light btn-sm fw-semibold">
+                <i class="fas fa-arrow-left me-1"></i>Kembali
+            </a>
+        </div>
+    </div>
     <div class="row justify-content-center">
         <div class="col-lg-8">
-            <div class="card shadow-sm border-0">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h4 class="mb-0">Edit Event</h4>
-                    <a href="{{ route('admin.events.index') }}" class="btn btn-outline-secondary">Kembali</a>
-                </div>
-                <div class="card-body">
+            <div class="card border-0 shadow-sm" style="border-top:4px solid #ffc107;">
+                <div class="card-body p-4">
                     <form method="POST" action="{{ route('admin.events.update', $event) }}" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
@@ -43,7 +50,8 @@
                             @error('image')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             @if($event->image)
                                 <div class="mt-2">
-                                    <img src="{{ asset('storage/' . $event->image) }}" alt="Foto Event" class="img-fluid rounded" style="max-height: 200px;">
+                                    <img src="{{ asset('storage/' . $event->image) }}" alt="Foto Event" class="img-fluid rounded" style="max-height: 200px;"
+                                         onerror="this.onerror=null;this.src='{{ asset('img/logo.png') }}' ">
                                 </div>
                             @endif
                         </div>

@@ -8,8 +8,8 @@ Aplikasi manajemen kesehatan berbasis web yang menghubungkan pasien dengan dokte
 
 | No | Nama | NIM | Kelas |
 |----|------|-----|-------|
-| 1 | [Daffa Reivan Fathur Rahman] | [41825010071] | Ketua Tim |
-| 2 | [Rafi Bima Tjahyadi] | [41825010043] | Anggota |
+| 1 | [Rafi Bima Tjahyadi] | [41825010043] | Ketua |
+| 2| [Daffa Reivan Fathur Rahman] | [41825010071] | Anggota |
 | 3 | [Dafa Pratama] | [41825010040] | Anggota |
 
 ---

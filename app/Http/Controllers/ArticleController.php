@@ -10,18 +10,25 @@ class ArticleController extends Controller
     public function index(Request $request)
     {
         $specialization = $request->get('specialization');
+        $search = $request->get('search');
+
         $articles = Article::with('author')
             ->where('published', true)
             ->when($specialization, fn($q) => $q->where('specialization', $specialization))
+            ->when($search, fn($q) => $q->where(function ($q) use ($search) {
+                $q->where('title', 'ilike', "%{$search}%")
+                  ->orWhere('content', 'ilike', "%{$search}%");
+            }))
             ->latest()
-            ->get();
+            ->paginate(9)
+            ->withQueryString();
 
         $specializations = Article::where('published', true)
             ->whereNotNull('specialization')
             ->distinct()
             ->pluck('specialization');
 
-        return view('articles.index', compact('articles', 'specializations', 'specialization'));
+        return view('articles.index', compact('articles', 'specializations', 'specialization', 'search'));
     }
 
     public function show(Article $article)

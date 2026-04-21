@@ -16,11 +16,14 @@ use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\Dokter\HealthyMenuController as DokterHealthyMenuController;
 use App\Http\Controllers\Dokter\ArticleController as DokterArticleController;
 use App\Http\Controllers\Admin\ArticleController as AdminArticleController;
+use App\Http\Controllers\Admin\ReservationController as AdminReservationController;
 use App\Models\HealthyMenu;
 use App\Models\Event;
 use App\Models\DietTip;
 use App\Models\Reservation;
 use App\Models\User;
+use App\Models\Article;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -37,7 +40,7 @@ Route::get('/', function () {
     $events   = Event::latest()->take(3)->get();
     $dietTips = DietTip::latest()->take(3)->get();
     $doctors  = User::where('role', 'dokter')->take(4)->get();
-    $articles = \App\Models\Article::with('author')->where('published', true)->latest()->take(3)->get();
+    $articles = Article::with('author')->where('published', true)->latest()->take(3)->get();
 
     // For authenticated pasien: fetch last reservation disease
     $lastReservationDisease = null;
@@ -70,35 +73,43 @@ Route::get('dashboard/admin', [UserController::class, 'dashboard_admin'])->middl
 
 // Hitung Kalori (auth only)
 Route::middleware(['auth'])->get('hitung-kalori', function () {
-    return view('kalori');
+    return view('kalori.index');
 })->name('calories.index');
 
 // Kalkulator BMI (public)
 Route::get('bmi', function () {
-    return view('bmi');
+    return view('bmi.index');
 })->name('bmi.index');
 
 // Artikel Kesehatan (public)
 Route::get('articles', [ArticleController::class, 'index'])->name('articles.index');
 Route::get('articles/{article}', [ArticleController::class, 'show'])->name('articles.show');
 
-// Makanan Sehat (auth only – filtered by last reservation disease)
+// Makanan Sehat (auth only – semua menu ditampilkan, diurutkan sesuai penyakit pasien)
 Route::middleware(['auth'])->get('menu-sehat', function (Request $request) {
     $specialization = $request->get('specialization');
 
-    // If no filter provided and user is pasien, auto-filter by last reservation
-    if (!$specialization && Auth::check() && Auth::user()->role === 'pasien') {
+    // Deteksi penyakit dari reservasi terakhir pasien
+    $disease = null;
+    if (Auth::check() && Auth::user()->role === 'pasien') {
         $lastReservation = \App\Models\Reservation::where('pasien_id', Auth::id())
             ->whereNotNull('disease')->latest()->first();
-        $specialization = $lastReservation?->disease;
+        $disease = $lastReservation?->disease;
     }
 
-    $menus = \App\Models\HealthyMenu::when($specialization, function ($query, $specialization) {
-        return $query->where('specialization', 'like', "%{$specialization}%")
-                     ->orWhere('specialization', 'like', '%Umum%');
-    })->orderBy('created_at', 'desc')->get();
+    $priority = $specialization ?? $disease;
 
-    return view('menu-sehat', compact('menus', 'specialization'));
+    // Tampilkan SEMUA menu, urutkan: disease -> Umum -> lainnya, lalu terbaru
+    $menus = HealthyMenu::orderByRaw("
+        CASE
+            WHEN specialization LIKE ? THEN 0
+            WHEN specialization LIKE '%Umum%' THEN 1
+            ELSE 2
+        END,
+        created_at DESC
+    ", ["%{$priority}%"])->get();
+
+    return view('healthy-menus.index', compact('menus', 'specialization', 'disease'));
 })->name('healthy-menus.index');
 
 // Route::get('menu-sehat', function () {
@@ -109,13 +120,13 @@ Route::get('menu-sehat/{menu}', [HealthyMenuController::class, 'show'])->name('h
 // Halaman Event Publik
 Route::get('events', function () {
     $events = Event::latest()->get();
-    return view('events', compact('events'));
+    return view('events.index', compact('events'));
 })->name('events.index');
 
 // Halaman Tips Diet Publik
 Route::get('diet-tips', function () {
     $dietTips = DietTip::latest()->get();
-    return view('diet-tips', compact('dietTips'));
+    return view('diet-tips.index', compact('dietTips'));
 })->name('diet-tips.index');
 
 Route::middleware(['auth', 'role:pasien'])->group(function () {
@@ -131,11 +142,13 @@ Route::get('doctors/{doctor}', [DoctorController::class, 'show'])->name('doctors
 // Group route reservasi
 Route::middleware(['auth', 'role:pasien'])->prefix('pasien')->name('pasien.')->group(function () {
     Route::get('reservations/doctors-by-disease', [ReservationController::class, 'getDoctorsByDisease'])->name('reservations.doctorsByDisease');
+    Route::get('reservations/booked-slots', [ReservationController::class, 'getBookedSlots'])->name('reservations.bookedSlots');
     Route::resource('reservations', ReservationController::class)->only(['index', 'create', 'store', 'show']);
 });
 
 // Chat message route (auth — pasien, dokter, admin)
 Route::middleware(['auth'])->post('reservations/{reservation}/message', [ReservationController::class, 'sendMessage'])->name('reservations.message');
+Route::middleware(['auth'])->get('reservations/{reservation}/messages', [ReservationController::class, 'getMessages'])->name('reservations.messages');
 
 Route::middleware(['auth', 'role:dokter'])->prefix('dokter')->name('dokter.')->group(function () {
     Route::get('reservations', [ReservationController::class, 'index'])->name('reservations.index');
@@ -147,7 +160,7 @@ Route::middleware(['auth', 'role:dokter'])->prefix('dokter')->name('dokter.')->g
 });
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::resource('reservations', ReservationController::class)->except(['create']);
+    Route::resource('reservations', AdminReservationController::class);
     Route::resource('users', UserManagementController::class)->except(['create']);
     Route::resource('events', EventController::class)->except(['show']);
     Route::resource('diet-tips', DietTipController::class)->except(['show']);

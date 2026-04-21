@@ -170,10 +170,18 @@
                         <a class="nav-link dropdown-toggle d-flex align-items-center gap-2 fw-medium"
                            href="#" id="navbarUserDropdown" role="button"
                            data-bs-toggle="dropdown" aria-expanded="false">
-                            <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
-                                 style="width:32px;height:32px;font-size:.85rem;font-weight:700;background:{{ $roleColor }};color:{{ $roleBtnText }};">
-                                {{ mb_strtoupper(mb_substr(auth()->user()->name, 0, 1)) }}
-                            </div>
+                            @if(auth()->user()->photo)
+                                <img src="{{ asset('storage/' . auth()->user()->photo) }}"
+                                     class="rounded-circle flex-shrink-0 object-fit-cover"
+                                     style="width:32px;height:32px;border:2px solid {{ $roleColor }};"
+                                     alt="{{ auth()->user()->name }}"
+                                     onerror="this.onerror=null;this.src='{{ asset('img/logo.png') }}' ">
+                            @else
+                                <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                                     style="width:32px;height:32px;font-size:.85rem;font-weight:700;background:{{ $roleColor }};color:{{ $roleBtnText }};">
+                                    {{ mb_strtoupper(mb_substr(auth()->user()->name, 0, 1)) }}
+                                </div>
+                            @endif
                             <span class="d-none d-md-inline">{{ auth()->user()->name }}</span>
                             @if($roleLabel)
                                 <span class="badge d-none d-md-inline" style="font-size:.7rem;background:{{ $roleColor }};color:{{ $roleBtnText }};">{{ $roleLabel }}</span>

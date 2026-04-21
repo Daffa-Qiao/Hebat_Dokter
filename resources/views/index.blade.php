@@ -230,11 +230,9 @@
         @forelse($articles as $article)
         <div class="col-md-4">
             <div class="card border-0 shadow-sm h-100">
-                @if($article->thumbnail)
-                <img src="{{ asset('storage/' . $article->thumbnail) }}" class="card-img-top" alt="{{ $article->title }}">
-                @else
-                <img src="{{ asset('img/article-default.jpg') }}" class="card-img-top" alt="{{ $article->title }}">
-                @endif
+                <img src="{{ $article->thumbnail ? asset('storage/' . $article->thumbnail) : asset('img/logo.png') }}"
+                     class="card-img-top" alt="{{ $article->title }}"
+                     onerror="this.onerror=null;this.src='{{ asset('img/logo.png') }}'">
                 <div class="card-body d-flex flex-column">
                     <h5 class="card-title   mb-2">{{ $article->title }}</h5>
                     <div class="mb-2">
@@ -306,7 +304,10 @@
             @forelse($events as $event)
             <div class="col-md-4">
                 <div class="card h-100 border-0 shadow-sm overflow-hidden">
-                    <img src="{{ $event->image ? asset('storage/' . $event->image) : asset('img/event1.jpg') }}" class="card-img-top" alt="{{ $event->title }}" style="width: 100%; aspect-ratio: 1 / 1; object-fit: cover;">
+                    <img src="{{ $event->image ? asset('storage/' . $event->image) : asset('img/logo.png') }}"
+                         class="card-img-top" alt="{{ $event->title }}"
+                         style="width:100%;aspect-ratio:1/1;object-fit:cover;"
+                         onerror="this.onerror=null;this.src='{{ asset('img/logo.png') }}' ">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center mb-2">
                             <span class="badge bg-success">{{ $event->date->locale('id')->translatedFormat('l, d F Y') }}</span>

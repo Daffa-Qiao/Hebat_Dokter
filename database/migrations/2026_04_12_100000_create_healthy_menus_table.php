@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('specialization')->nullable();
             $table->foreignId('doctor_id')->nullable()->constrained('users')->nullOnDelete();
             $table->string('image')->nullable();
+            $table->text('recipe')->nullable();
             $table->timestamps();
         });
     }

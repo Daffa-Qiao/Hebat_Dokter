@@ -2,12 +2,22 @@
 @section('title', 'Edit Artikel')
 @section('content')
 @include('layouts.navbars.dashboardnav')
-<div class="container py-4">
+<div class="container py-5">
+    <div class="rounded-3 p-4 mb-4 text-white" style="background:linear-gradient(135deg,#dc3545,#c62828);">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+                <h3 class="fw-bold mb-1"><i class="fas fa-pen-nib me-2"></i>Edit Artikel</h3>
+                <p class="mb-0 opacity-75">Perbarui artikel: <strong>{{ Str::limit($article->title, 50) }}</strong></p>
+            </div>
+            <a href="{{ route('dokter.articles.index') }}" class="btn btn-light btn-sm fw-semibold">
+                <i class="fas fa-arrow-left me-1"></i>Kembali
+            </a>
+        </div>
+    </div>
     <div class="row justify-content-center">
         <div class="col-md-9">
-            <div class="card shadow-sm border-0">
-                <div class="card-header bg-warning text-dark">Edit Artikel Kesehatan</div>
-                <div class="card-body">
+            <div class="card border-0 shadow-sm" style="border-top:4px solid #dc3545;">
+                <div class="card-body p-4">
                     <form method="POST" action="{{ route('dokter.articles.update', $article) }}" enctype="multipart/form-data">
                         @csrf @method('PUT')
                         <div class="mb-3">
@@ -19,7 +29,8 @@
                         <div class="mb-3">
                             <label class="form-label fw-bold">Thumbnail</label>
                             @if($article->thumbnail)
-                                <div class="mb-2"><img src="{{ asset('storage/' . $article->thumbnail) }}" style="height:80px; border-radius:6px;" alt=""></div>
+                                <div class="mb-2"><img src="{{ asset('storage/' . $article->thumbnail) }}" style="height:80px; border-radius:6px;" alt=""
+                                     onerror="this.onerror=null;this.src='{{ asset('img/logo.png') }}' "></div>
                             @endif
                             <input type="file" name="thumbnail" class="form-control" accept="image/*">
                         </div>

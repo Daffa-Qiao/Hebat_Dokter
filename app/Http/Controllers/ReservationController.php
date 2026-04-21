@@ -21,7 +21,24 @@ class ReservationController extends Controller
         } else {
             $reservations = Reservation::with(['pasien', 'dokter'])->where('pasien_id', $user->id)->latest()->get();
         }
-        return view('reservations.index', compact('reservations'));
+
+        $dokters = $user->role === 'admin' ? User::where('role', 'dokter')->get() : collect();
+
+        $diseases = [
+            'Jantung'    => 'Kardiologi',
+            'Pencernaan' => 'Gastroenterologi',
+            'Ginjal'     => 'Nefrologi',
+            'Paru-paru'  => 'Pulmonologi',
+            'Saraf'      => 'Neurologi',
+            'Kulit'      => 'Dermatologi',
+            'Anak'       => 'Pediatri',
+            'Gigi'       => 'Gigi',
+            'Mata'       => 'Mata',
+            'Ortopedi'   => 'Ortopedi',
+            'Umum'       => 'Umum',
+        ];
+
+        return view('pasien.reservations.index', compact('reservations', 'dokters', 'diseases'));
     }
 
     // Form buat reservasi (pasien)
@@ -40,7 +57,7 @@ class ReservationController extends Controller
             'Ortopedi'     => 'Ortopedi',
             'Umum'         => 'Umum',
         ];
-        return view('reservations.create', compact('diseases'));
+        return view('pasien.reservations.create', compact('diseases'));
     }
 
     // Simpan reservasi (pasien)
@@ -48,12 +65,11 @@ class ReservationController extends Controller
     {
         $request->validate([
             'disease'    => 'required|string|max:100',
-            'jadwal'     => 'required|date|after:now',
+            'jadwal'     => 'required|date|after:today',
             'keterangan' => 'nullable|string',
         ]);
 
         $diseaseToSpec = [
-            'Jantung'   => 'Kardiologi',
             'Pencernaan'=> 'Gastroenterologi',
             'Ginjal'    => 'Nefrologi',
             'Paru-paru' => 'Pulmonologi',
@@ -88,6 +104,24 @@ class ReservationController extends Controller
                 ->first();
         }
 
+        // Cek konflik jadwal: dokter yang sama, jam yang sama
+        if ($dokter) {
+            $jadwalCarbon = \Carbon\Carbon::parse($request->jadwal);
+            $conflict = Reservation::where('dokter_id', $dokter->id)
+                ->whereYear('jadwal', $jadwalCarbon->year)
+                ->whereMonth('jadwal', $jadwalCarbon->month)
+                ->whereDay('jadwal', $jadwalCarbon->day)
+                ->whereRaw('EXTRACT(HOUR FROM jadwal) = ?', [$jadwalCarbon->hour])
+                ->whereIn('status', ['pending', 'accepted'])
+                ->exists();
+
+            if ($conflict) {
+                return back()->withInput()->withErrors([
+                    'jadwal' => 'Dokter sudah memiliki jadwal pada jam tersebut. Silakan pilih jam lain.',
+                ]);
+            }
+        }
+
         Reservation::create([
             'pasien_id'  => Auth::id(),
             'dokter_id'  => $dokter?->id,
@@ -104,7 +138,7 @@ class ReservationController extends Controller
     public function show(Reservation $reservation)
     {
         $reservation->load(['pasien', 'dokter', 'messages.sender']);
-        return view('reservations.show', compact('reservation'));
+        return view('pasien.reservations.show', compact('reservation'));
     }
 
     // Kirim pesan chat di reservasi
@@ -118,13 +152,54 @@ class ReservationController extends Controller
             || $user->role === 'admin';
         abort_unless($canChat, 403);
 
-        Message::create([
+        $message = Message::create([
             'reservation_id' => $reservation->id,
             'sender_id'      => $user->id,
             'body'           => $request->body,
         ]);
 
+        $message->load('sender');
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'id'         => $message->id,
+                'body'       => $message->body,
+                'sender_id'  => $message->sender_id,
+                'sender'     => $message->sender->name,
+                'role'       => $message->sender->role,
+                'created_at' => $message->created_at->format('H:i'),
+            ]);
+        }
+
         return back()->with('chatSuccess', 'Pesan terkirim!');
+    }
+
+    // Ambil pesan baru sejak ID tertentu (polling)
+    public function getMessages(Request $request, Reservation $reservation)
+    {
+        $user = Auth::user();
+        $canChat = $user->id === $reservation->pasien_id
+            || $user->id === $reservation->dokter_id
+            || $user->role === 'admin';
+        abort_unless($canChat, 403);
+
+        $since = $request->integer('since', 0);
+
+        $messages = Message::with('sender')
+            ->where('reservation_id', $reservation->id)
+            ->where('id', '>', $since)
+            ->orderBy('id')
+            ->get()
+            ->map(fn($m) => [
+                'id'         => $m->id,
+                'body'       => $m->body,
+                'sender_id'  => $m->sender_id,
+                'sender'     => $m->sender->name,
+                'role'       => $m->sender->role,
+                'created_at' => $m->created_at->format('H:i'),
+            ]);
+
+        return response()->json(['messages' => $messages]);
     }
 
     // Cari dokter berdasarkan penyakit (AJAX untuk form reservasi)
@@ -171,11 +246,30 @@ class ReservationController extends Controller
         ]);
     }
 
+    // Cek jadwal yang sudah terisi untuk dokter tertentu pada tanggal tertentu
+    public function getBookedSlots(Request $request)
+    {
+        $request->validate([
+            'doctor_id' => 'required|integer|exists:users,id',
+            'date'      => 'required|date_format:Y-m-d',
+        ]);
+
+        $bookedHours = Reservation::where('dokter_id', $request->doctor_id)
+            ->whereDate('jadwal', $request->date)
+            ->whereIn('status', ['pending', 'accepted'])
+            ->selectRaw('EXTRACT(HOUR FROM jadwal)::int AS hour')
+            ->pluck('hour')
+            ->map(fn($h) => str_pad((string)$h, 2, '0', STR_PAD_LEFT))
+            ->values();
+
+        return response()->json(['booked_hours' => $bookedHours]);
+    }
+
     // Edit reservasi (admin)
     public function edit(Reservation $reservation)
     {
         $dokters = User::where('role', 'dokter')->get();
-        return view('reservations.edit', compact('reservation', 'dokters'));
+        return view('pasien.reservations.edit', compact('reservation', 'dokters'));
     }
 
     // Update reservasi (admin)

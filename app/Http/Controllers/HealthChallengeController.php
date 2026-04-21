@@ -32,7 +32,7 @@ class HealthChallengeController extends Controller
             $streak      = UserChallenge::where('user_id', Auth::id())->max('streak') ?? 0;
             $notifications = Auth::user()->unreadNotifications()->take(5)->get();
 
-            return view('health-challenge', compact('userChallenges', 'totalPoints', 'streak', 'notifications'));
+            return view('health-challenge.index', compact('userChallenges', 'totalPoints', 'streak', 'notifications'));
         }
 
         // Guests: show static list
@@ -48,7 +48,7 @@ class HealthChallengeController extends Controller
                 (object)['title' => 'Tidur Teratur', 'description' => 'Jaga waktu tidur cukup dan teratur.', 'points' => 15],
             ]);
         }
-        return view('health-challenge', compact('challenges'));
+        return view('health-challenge.index', compact('challenges'));
     }
 
     public function complete(Request $request, UserChallenge $userChallenge)

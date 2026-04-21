@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder
         // ]);
 
         // Seeder user role dokter
-        \App\Models\User::updateOrCreate([
+        User::updateOrCreate([
             'email' => 'dokter@example.com',
         ], [
             'name' => 'dr. Ahmad Fauzi, Sp.PD-KGH',
